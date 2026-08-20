@@ -46,11 +46,7 @@ button {
 
 .widget-shell {
   width: 100%;
-
-  padding:
-    clamp(18px, 4vw, 52px)
-    0
-    16px;
+  padding: 0;
 }
 
 
