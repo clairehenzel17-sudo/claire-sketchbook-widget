@@ -65,11 +65,8 @@ button {
 
 .stage {
   display: flex;
-
   align-items: center;
-
-  width: min(100%, 852px);
-
+  width: min(100%, 1200px);
   margin-inline: auto;
 }
 
@@ -85,7 +82,7 @@ button {
 
   min-width: 0;
 
-  max-width: 780px;
+  max-width: 1120px;
 
   aspect-ratio: 1280 / 720;
 
