@@ -341,52 +341,72 @@
   /* ----------------------------------
      FINISH PAGE TURN
   ---------------------------------- */
+function complete(targetIndex) {
 
-  function complete(targetIndex) {
+  /*
+    The turning sheet is still sitting on top
+    in its final position.
 
-    index =
-      targetIndex;
+    FIRST change the permanent spread underneath
+    to the correct new spread.
+  */
 
+  index = targetIndex;
 
-    turning =
-      false;
+  const spread = spreads[index];
 
+  currentLayer.innerHTML =
+    spread
+      ? imageMarkup(spread)
+      : "";
 
-    transitionLayer.innerHTML =
-      "";
-
-
-    transitionLayer.className =
-      "transition";
-
-
-    /*
-      Only NOW do we replace the static spread.
-
-      This prevents the old page from
-      flashing during the animation.
-    */
-
-    render();
+  book.setAttribute(
+    "aria-label",
+    `Sketchbook spread ${index + 1} of ${spreads.length}`
+  );
 
 
-    if (pendingDirection) {
+  /*
+    Wait until the browser has actually painted
+    the correct spread underneath.
 
-      const nextDirection =
-        pendingDirection;
+    THEN remove the temporary turning sheet.
+
+    This eliminates the single-frame flash of
+    the previous spread.
+  */
+
+  requestAnimationFrame(() => {
+
+    requestAnimationFrame(() => {
+
+      transitionLayer.innerHTML = "";
+
+      transitionLayer.className = "transition";
+
+      turning = false;
+
+      updateControls();
 
 
-      pendingDirection =
-        null;
+      if (pendingDirection) {
 
+        const nextDirection =
+          pendingDirection;
 
-      requestAnimationFrame(
-        () => turn(nextDirection)
-      );
+        pendingDirection = null;
 
-    }
+        requestAnimationFrame(
+          () => turn(nextDirection)
+        );
 
-  }
+      }
+
+    });
+
+  });
+
+}
 
 
   /* ----------------------------------
