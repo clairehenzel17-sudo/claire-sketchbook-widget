@@ -444,13 +444,33 @@ as wide as the half-page container.
    PAGE UNDERNEATH TURNING SHEET
 ---------------------------------- */
 
-.spread-under {
-  z-index: 2;
 
-  opacity: 1;
+/* ----------------------------------
+   TARGET SPREAD UNDER ENTIRE TURN
+---------------------------------- */
+
+.target-spread {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+}
+
+.target-spread .spread-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
 }
 
 
+/* ----------------------------------
+   OLD PAGE THAT STAYS STILL
+---------------------------------- */
+
+.stationary-old-page {
+  z-index: 3;
+}
 /* ----------------------------------
    TURNING SHEET
 ---------------------------------- */
