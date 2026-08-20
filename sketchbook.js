@@ -342,322 +342,198 @@
      FINISH PAGE TURN
   ---------------------------------- */
 function complete(targetIndex) {
-
-  /*
-    The turning sheet is still sitting on top
-    in its final position.
-
-    FIRST change the permanent spread underneath
-    to the correct new spread.
-  */
-
   index = targetIndex;
-
-  const spread = spreads[index];
-
-  currentLayer.innerHTML =
-    spread
-      ? imageMarkup(spread)
-      : "";
-
-  book.setAttribute(
-    "aria-label",
-    `Sketchbook spread ${index + 1} of ${spreads.length}`
-  );
-
+  turning = false;
 
   /*
-    Wait until the browser has actually painted
-    the correct spread underneath.
+    The full target spread has already been
+    sitting underneath the entire animation.
 
-    THEN remove the temporary turning sheet.
-
-    This eliminates the single-frame flash of
-    the previous spread.
+    Make it the permanent spread without
+    creating a new image element.
   */
+  const targetSpread =
+    transitionLayer.querySelector(".target-spread");
 
+  if (targetSpread) {
+    currentLayer.innerHTML = targetSpread.innerHTML;
+  }
+
+  /*
+    Keep the transition in place for one painted
+    frame so the permanent layer is guaranteed
+    to be visible before anything above it disappears.
+  */
   requestAnimationFrame(() => {
-
     requestAnimationFrame(() => {
-
       transitionLayer.innerHTML = "";
-
       transitionLayer.className = "transition";
-
-      turning = false;
 
       updateControls();
 
-
       if (pendingDirection) {
-
-        const nextDirection =
-          pendingDirection;
-
+        const nextDirection = pendingDirection;
         pendingDirection = null;
 
         requestAnimationFrame(
           () => turn(nextDirection)
         );
-
       }
-
     });
-
   });
-
 }
-
-
   /* ----------------------------------
      PAGE TURN
   ---------------------------------- */
 
-  function turn(direction) {
+ function turn(direction) {
+  if (coverAnimating) return;
 
-    if (coverAnimating) {
-      return;
+  if (closed) {
+    if (direction === "next") {
+      openBook();
     }
 
-
-    /*
-      Clicking NEXT on the closed book
-      opens the cover.
-    */
-
-    if (closed) {
-
-      if (direction === "next") {
-        openBook();
-      }
-
-      return;
-
-    }
-
-
-    /*
-      Clicking PREVIOUS from the
-      first spread closes the book.
-    */
-
-    if (
-      direction === "previous" &&
-      index === 0
-    ) {
-
-      closeBook();
-
-      return;
-
-    }
-
-
-    /*
-      If someone clicks again while
-      a page is already turning,
-      remember only their latest intent.
-    */
-
-    if (turning) {
-
-      if (
-        pendingDirection &&
-        pendingDirection !== direction
-      ) {
-
-        pendingDirection =
-          null;
-
-      }
-
-      else {
-
-        pendingDirection =
-          direction;
-
-      }
-
-      return;
-
-    }
-
-
-    const targetIndex =
-      index +
-      (
-        direction === "next"
-          ? 1
-          : -1
-      );
-
-
-    if (
-      targetIndex < 0 ||
-      targetIndex >= spreads.length
-    ) {
-      return;
-    }
-
-
-    if (reduceMotion.matches) {
-
-      index =
-        targetIndex;
-
-
-      render();
-
-      return;
-
-    }
-
-
-    turning =
-      true;
-
-
-    const current =
-      spreads[index];
-
-
-    const target =
-      spreads[targetIndex];
-
-
-    const isNext =
-      direction === "next";
-
-
-    /*
-      THIS IS THE IMPORTANT CHANGE.
-
-      We no longer erase the current spread
-      before the page animation begins.
-
-      Instead, we construct one physical
-      turning sheet.
-
-      NEXT:
-
-      Stationary:
-      current left page
-
-      Turning sheet FRONT:
-      current right page
-
-      Turning sheet BACK:
-      next left page
-
-      Under the turning sheet:
-      next right page
-
-
-      PREVIOUS:
-
-      Stationary:
-      current right page
-
-      Turning sheet FRONT:
-      current left page
-
-      Turning sheet BACK:
-      previous right page
-
-      Under the turning sheet:
-      previous left page
-    */
-
-
-    const underlyingSide =
-      isNext
-        ? "right"
-        : "left";
-
-
-    const frontSide =
-      isNext
-        ? "right"
-        : "left";
-
-
-    const backSide =
-      isNext
-        ? "left"
-        : "right";
-
-
-    /*
-      IMPORTANT:
-
-      currentLayer stays exactly as it is.
-
-      That means the current spread remains
-      stable behind the animation rather than
-      disappearing and being recreated.
-    */
-
-
-    transitionLayer.innerHTML =
-      `
-        <div
-          class="
-            spread-half
-            spread-half--${underlyingSide}
-            spread-under
-          "
-        >
-          ${imageMarkup(target)}
-        </div>
-
-
-        <div
-          class="
-            flap
-            flap--${direction}
-          "
-        >
-
-          ${faceMarkup(
-            current,
-            frontSide,
-            false
-          )}
-
-          ${faceMarkup(
-            target,
-            backSide,
-            true
-          )}
-
-        </div>
-      `;
-
-
-    updateControls();
-
-
-    const flap =
-      transitionLayer.querySelector(
-        ".flap"
-      );
-
-
-    flap.addEventListener(
-
-      "animationend",
-
-      () => complete(targetIndex),
-
-      {
-        once: true
-      }
-
-    );
-
+    return;
   }
 
+  if (
+    direction === "previous" &&
+    index === 0
+  ) {
+    closeBook();
+    return;
+  }
 
+  if (turning) {
+    if (
+      pendingDirection &&
+      pendingDirection !== direction
+    ) {
+      pendingDirection = null;
+    } else {
+      pendingDirection = direction;
+    }
+
+    return;
+  }
+
+  const targetIndex =
+    index +
+    (
+      direction === "next"
+        ? 1
+        : -1
+    );
+
+  if (
+    targetIndex < 0 ||
+    targetIndex >= spreads.length
+  ) {
+    return;
+  }
+
+  if (reduceMotion.matches) {
+    index = targetIndex;
+    render();
+    return;
+  }
+
+  turning = true;
+
+  const current =
+    spreads[index];
+
+  const target =
+    spreads[targetIndex];
+
+  const isNext =
+    direction === "next";
+
+  /*
+    NEW CONSTRUCTION
+
+    The COMPLETE TARGET SPREAD is placed
+    underneath from the very beginning.
+
+    NEXT:
+    - target spread underneath
+    - old left page temporarily covers target left
+    - old right page is front of turning sheet
+    - target left page is back of turning sheet
+
+    PREVIOUS:
+    - target spread underneath
+    - old right page temporarily covers target right
+    - old left page is front of turning sheet
+    - target right page is back of turning sheet
+  */
+
+  const stationarySide =
+    isNext
+      ? "left"
+      : "right";
+
+  const frontSide =
+    isNext
+      ? "right"
+      : "left";
+
+  const backSide =
+    isNext
+      ? "left"
+      : "right";
+
+  transitionLayer.innerHTML = `
+    <div class="target-spread">
+      ${imageMarkup(target)}
+    </div>
+
+    <div
+      class="
+        spread-half
+        spread-half--${stationarySide}
+        stationary-old-page
+      "
+    >
+      ${imageMarkup(current)}
+    </div>
+
+    <div
+      class="
+        flap
+        flap--${direction}
+      "
+    >
+
+      ${faceMarkup(
+        current,
+        frontSide,
+        false
+      )}
+
+      ${faceMarkup(
+        target,
+        backSide,
+        true
+      )}
+
+    </div>
+  `;
+
+  updateControls();
+
+  const flap =
+    transitionLayer.querySelector(".flap");
+
+  flap.addEventListener(
+    "animationend",
+    () => complete(targetIndex),
+    {
+      once: true
+    }
+  );
+}
   /* ----------------------------------
      CLICK EVENTS
   ---------------------------------- */
