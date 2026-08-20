@@ -6,47 +6,105 @@
   <title>Claire Henzel — Sketchbook</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <main class="widget-shell">
-    <section class="sketchbook" aria-label="Claire Henzel sketchbook">
+
+    <section
+      class="sketchbook"
+      aria-label="Claire Henzel sketchbook"
+    >
+
       <div class="stage">
-        <button class="arrow arrow--previous" type="button" aria-label="Previous spread">
-          <svg viewBox="0 0 14 44" aria-hidden="true"><path d="M11.5 2.5 3 22l8.5 19.5"/></svg>
+
+        <button
+          class="arrow arrow--previous"
+          type="button"
+          aria-label="Previous spread"
+        >
+          <svg viewBox="0 0 14 44" aria-hidden="true">
+            <path d="M11.5 2.5 3 22l8.5 19.5"/>
+          </svg>
         </button>
+
 
         <div class="book">
-          <div class="book-shadow" aria-hidden="true"></div>
-          <button class="cover-state" type="button" aria-label="Open sketchbook">
-            <span class="cover-face cover-face--front"><img src="assets/source/closed-cover-generated.png" alt="" draggable="false"></span>
-            <span class="cover-face cover-face--inside"><img src="assets/source/cover-back.png" alt="" draggable="false"></span>
+
+          <div
+            class="book-shadow"
+            aria-hidden="true"
+          ></div>
+
+
+          <button
+            class="cover-state"
+            type="button"
+            aria-label="Open sketchbook"
+          >
+
+            <span class="cover-face cover-face--front">
+              <img
+                src="assets/source/closed-cover-generated.png"
+                alt=""
+                draggable="false"
+              >
+            </span>
+
+            <span class="cover-face cover-face--inside">
+              <img
+                src="assets/source/cover-back.png"
+                alt=""
+                draggable="false"
+              >
+            </span>
+
           </button>
+
+
           <div class="spread-current"></div>
-          <div class="transition" aria-hidden="true"></div>
-          <button class="page-zone page-zone--previous" type="button" tabindex="-1" aria-hidden="true"></button>
-          <button class="page-zone page-zone--next" type="button" tabindex="-1" aria-hidden="true"></button>
+
+          <div
+            class="transition"
+            aria-hidden="true"
+          ></div>
+
+
+          <button
+            class="page-zone page-zone--previous"
+            type="button"
+            tabindex="-1"
+            aria-hidden="true"
+          ></button>
+
+          <button
+            class="page-zone page-zone--next"
+            type="button"
+            tabindex="-1"
+            aria-hidden="true"
+          ></button>
+
         </div>
 
-        <button class="arrow arrow--next" type="button" aria-label="Next spread">
-          <svg viewBox="0 0 14 44" aria-hidden="true"><path d="M2.5 2.5 11 22 2.5 41.5"/></svg>
+
+        <button
+          class="arrow arrow--next"
+          type="button"
+          aria-label="Next spread"
+        >
+          <svg viewBox="0 0 14 44" aria-hidden="true">
+            <path d="M2.5 2.5 11 22 2.5 41.5"/>
+          </svg>
         </button>
+
       </div>
-      <p class="caption" role="status" aria-live="polite">
-        <span class="caption-current"></span>
-        <span class="caption-incoming"></span>
-      </p>
+
     </section>
 
-    <svg class="motion-filters" aria-hidden="true">
-      <filter id="blur-one" x="-20%" y="-10%" width="140%" height="120%">
-        <feGaussianBlur stdDeviation="5 0"/>
-      </filter>
-      <filter id="blur-two" x="-30%" y="-10%" width="160%" height="120%">
-        <feGaussianBlur stdDeviation="14 0"/>
-      </filter>
-    </svg>
   </main>
+
 
   <script src="pages.js"></script>
   <script src="sketchbook.js"></script>
+
 </body>
 </html>
